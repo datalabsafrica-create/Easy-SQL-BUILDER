@@ -1,0 +1,6 @@
+{
+  "name": "EasySQL Builder",
+  "description": "A beginner-friendly SQL Generator web app designed for non-technical users to generate SQL queries visually and learn SQL basics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
