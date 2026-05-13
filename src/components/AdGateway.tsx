@@ -14,7 +14,7 @@ export function AdGateway({ onUnlock }: AdGatewayProps) {
     //    to verify the ad was watched before calling onUnlock().
     // -------------------------------------------------------------------------
     
-    const smartLinkUrl = "https://example.com/your-ad-network-smartlink-here";
+    const smartLinkUrl = "https://www.profitablecpmratenetwork.com/eptfdgegw?key=9029ed441555986ae5243084e752e0d5";
     
     // Open the smartlink in a new tab
     window.open(smartLinkUrl, '_blank');
