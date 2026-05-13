@@ -37,31 +37,30 @@ Format the explanation nicely in Markdown. Structure it with bullet points if he
   }
 }
 
-export async function textToSql(text: string, schema: TableSchema[]): Promise<string> {
+export async function getGuidance(text: string, schema: TableSchema[]): Promise<string> {
   try {
     const ai = getAi();
     const schemaText = schema.map(t => `Table: ${t.name}\nColumns: ${t.columns.join(', ')}`).join('\n\n');
     
-    const prompt = `You are a helpful SQL assistant. A user wants a SQL query based on an English description.
+    const prompt = `You are a helpful SQL mentor. A user wants to know how to write a SQL query based on an English description.
 Below is the database schema:
 
 ${schemaText || '(No tables defined yet)'}
 
 User's Request: "${text}"
 
-Based on the schema, write the exact SQL query they need. 
-Return ONLY the raw SQL query string, without markdown formatting like \`\`\`sql. 
-Make sure it is simple.`;
+Based on the schema, DO NOT write the exact SQL query. Instead, guide the user on how to approach this.
+Explain which tables and columns they should use, what type of query it is (SELECT, INSERT, etc.), and what conditions or clauses (WHERE, ORDER BY) they will need.
+Provide your response in clear, concise Markdown without generating the final SQL formula.`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.1-pro-preview',
       contents: prompt,
     });
-    let sql = response.text || '';
-    sql = sql.replace(/```sql\n?/ig, '').replace(/```\n?/ig, '').trim();
-    return sql;
+    return response.text || 'Could not generate guidance.';
   } catch (error: any) {
-    console.error('Error generating SQL from text:', error);
+    console.error('Error generating guidance:', error);
     throw new Error(error.message);
   }
 }
+

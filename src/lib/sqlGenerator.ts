@@ -8,9 +8,9 @@ export function generateSql(state: AppState): string {
     case 'SELECT':
       return generateSelect(state, table.name);
     case 'INSERT':
-      return generateInsert(state, table.name);
+      return generateInsert(state, table);
     case 'UPDATE':
-      return generateUpdate(state, table.name);
+      return generateUpdate(state, table);
     case 'DELETE':
       return generateDelete(state, table.name);
     case 'CREATE TABLE':
@@ -42,18 +42,27 @@ function generateSelect(state: AppState, tableName: string) {
   return sql + ';';
 }
 
-function generateInsert(state: AppState, tableName: string) {
-  const cols = state.selectedColumns.length > 0 ? state.selectedColumns : ['column1'];
-  const vals = cols.map(() => "'some_value'").join(', ');
-  return `INSERT INTO ${tableName} (${cols.join(', ')})\nVALUES (${vals});`;
+function generateInsert(state: AppState, table: TableSchema) {
+  const cols = state.selectedColumns.length > 0 ? state.selectedColumns : table.columns;
+  const vals = cols.map((c) => {
+    const val = state.columnValues[c];
+    if (val !== undefined && val !== '') {
+      return !isNaN(Number(val)) ? val : `'${val}'`;
+    }
+    return "'some_value'";
+  }).join(', ');
+  return `INSERT INTO ${table.name} (${cols.join(', ')})\nVALUES (${vals});`;
 }
 
-function generateUpdate(state: AppState, tableName: string) {
-  const sets = state.selectedColumns.length > 0
-    ? state.selectedColumns.map((c) => `${c} = 'new_value'`).join(', ')
-    : "column1 = 'new_value'";
+function generateUpdate(state: AppState, table: TableSchema) {
+  const colsToUpdate = state.selectedColumns.length > 0 ? state.selectedColumns : table.columns;
+  const sets = colsToUpdate.map((c) => {
+    const val = state.columnValues[c];
+    const formatted = val !== undefined && val !== '' ? (!isNaN(Number(val)) ? val : `'${val}'`) : "'new_value'";
+    return `${c} = ${formatted}`;
+  }).join(', ');
 
-  let sql = `UPDATE ${tableName}\nSET ${sets}`;
+  let sql = `UPDATE ${table.name}\nSET ${sets}`;
 
   const where = buildWhere(state.conditions);
   if (where) sql += `\nWHERE ${where}`;

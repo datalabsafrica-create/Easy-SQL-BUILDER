@@ -16,6 +16,7 @@ export default function App() {
     activeTableId: null,
     queryType: 'SELECT',
     selectedColumns: [],
+    columnValues: {},
     conditions: [],
     sorting: null,
     limit: '',
@@ -117,7 +118,6 @@ export default function App() {
         <div className="w-full lg:w-[450px] flex flex-col gap-4 overflow-y-auto pr-2 pb-10">
           <AiBuilder 
             schema={state.schema} 
-            onSqlGenerated={(sql) => setCustomSql(sql)} 
           />
           <SavedQueries queries={savedQueries} onLoad={handleLoadQuery} onDelete={handleDeleteQuery} />
           <Templates onSelectTemplate={handleTemplateSelect} />

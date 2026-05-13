@@ -14,7 +14,7 @@ export function QueryBuilder({ state, setState, rawSql = '' }: QueryBuilderProps
 
   // Remove unused handleQueryTypeChange
   const handleTableChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setState(s => ({ ...s, activeTableId: e.target.value, selectedColumns: [], conditions: [], sorting: null }));
+    setState(s => ({ ...s, activeTableId: e.target.value, selectedColumns: [], columnValues: {}, conditions: [], sorting: null }));
   };
 
   const toggleColumn = (col: string) => {
@@ -212,7 +212,7 @@ export function QueryBuilder({ state, setState, rawSql = '' }: QueryBuilderProps
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   <span
-                    onClick={() => setState(s => ({ ...s, selectedColumns: [] }))}
+                    onClick={() => setState(s => ({ ...s, selectedColumns: [], columnValues: {} }))}
                     className={`px-3 py-1.5 text-xs font-semibold rounded-lg border cursor-pointer transition-colors ${
                       state.selectedColumns.length === 0 
                         ? 'bg-indigo-100 text-indigo-700 border-indigo-200' 
@@ -236,6 +236,29 @@ export function QueryBuilder({ state, setState, rawSql = '' }: QueryBuilderProps
                   ))}
                 </div>
               </section>
+
+              {/* Set Values */}
+              {(state.queryType === 'INSERT' || state.queryType === 'UPDATE') && (
+                <section>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex gap-1 items-center">
+                    Set Values for {state.selectedColumns.length > 0 ? 'Selected' : 'All'} Columns
+                  </h3>
+                  <div className="flex flex-col gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    {(state.selectedColumns.length > 0 ? state.selectedColumns : activeTable.columns).map(c => (
+                      <div key={c} className="flex flex-col sm:flex-row gap-2 items-center">
+                        <span className="text-sm font-medium text-slate-700 min-w-[120px]">{c} =</span>
+                        <input 
+                          type="text" 
+                          placeholder="value" 
+                          className="flex-1 p-2 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500"
+                          value={state.columnValues[c] || ''}
+                          onChange={(e) => setState(s => ({ ...s, columnValues: { ...s.columnValues, [c]: e.target.value } }))}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               {/* Filtering */}
               {(state.queryType === 'SELECT' || state.queryType === 'UPDATE' || state.queryType === 'DELETE') && (

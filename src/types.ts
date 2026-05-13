@@ -23,6 +23,7 @@ export interface AppState {
   activeTableId: string | null;
   queryType: QueryType;
   selectedColumns: string[];
+  columnValues: Record<string, string>;
   conditions: Condition[];
   sorting: Sort | null;
   limit: number | '';
