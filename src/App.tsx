@@ -8,8 +8,10 @@ import { LivePreview } from './components/LivePreview';
 import { Templates } from './components/Templates';
 import { SavedQueries } from './components/SavedQueries';
 import { CourseModule } from './components/CourseModule';
+import { AdGateway } from './components/AdGateway';
 
 export default function App() {
+  const [hasWatchedAd, setHasWatchedAd] = useState(false);
   const [state, setState] = useState<AppState>({
     schema: [],
     activeTableId: null,
@@ -111,6 +113,8 @@ export default function App() {
           </div>
         </div>
       </header>
+
+      {!hasWatchedAd && <AdGateway onUnlock={() => setHasWatchedAd(true)} />}
 
       <main className="flex-1 flex overflow-hidden p-6 gap-6 max-w-[1400px] mx-auto w-full">
         {/* Left Sidebar: Query Builder */}
