@@ -1,7 +1,6 @@
 import { Copy, Download, Code2, Sparkles, Save, X } from 'lucide-react';
 import React, { useState } from 'react';
 import Markdown from 'react-markdown';
-import { explainSql } from '../services/geminiService';
 
 interface LivePreviewProps {
   sql: string;
@@ -11,8 +10,6 @@ interface LivePreviewProps {
 
 export function LivePreview({ sql, customSql, onSave }: LivePreviewProps) {
   const [copied, setCopied] = useState(false);
-  const [explanation, setExplanation] = useState('');
-  const [isExplaining, setIsExplaining] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [saveDesc, setSaveDesc] = useState('');
@@ -33,19 +30,6 @@ export function LivePreview({ sql, customSql, onSave }: LivePreviewProps) {
     a.download = 'query.sql';
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const explainQuery = async () => {
-    if (!displaySql || displaySql.startsWith('--')) return;
-    setIsExplaining(true);
-    try {
-      const result = await explainSql(displaySql);
-      setExplanation(result);
-    } catch (err) {
-      setExplanation('Failed to explain query. Check console for details.');
-    } finally {
-      setIsExplaining(false);
-    }
   };
 
   const handleSave = () => {
@@ -157,37 +141,25 @@ export function LivePreview({ sql, customSql, onSave }: LivePreviewProps) {
             Beginner Translation
           </h2>
           <div className="flex items-center gap-4">
-             <button 
-              onClick={explainQuery}
-              disabled={isExplaining || !displaySql || displaySql.startsWith('--')}
-              className="text-indigo-600 text-sm font-semibold hover:text-indigo-800 disabled:opacity-50"
-            >
-              {isExplaining ? 'Translating...' : 'Translate Query'}
-            </button>
+             {/* Explain feature removed */}
           </div>
         </div>
         
         <div className="flex flex-col gap-4">
-           {explanation ? (
-              <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 text-slate-700 text-sm markdown-body">
-                <Markdown>{explanation}</Markdown>
-              </div>
-           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                 <div className="text-slate-400 font-bold text-xs uppercase mb-1 tracking-wide">Step 1</div>
-                <div className="text-slate-700 font-medium text-sm">"Write your query or generate it with AI."</div>
+                <div className="text-slate-700 font-medium text-sm">"Select columns, filters, and sorting."</div>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                 <div className="text-slate-400 font-bold text-xs uppercase mb-1 tracking-wide">Step 2</div>
-                <div className="text-slate-700 font-medium text-sm">"Click 'Translate Query' above."</div>
+                <div className="text-slate-700 font-medium text-sm">"Observe the generated SQL query."</div>
               </div>
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                 <div className="text-slate-400 font-bold text-xs uppercase mb-1 tracking-wide">Step 3</div>
-                <div className="text-slate-700 font-medium text-sm">"See exactly what each line does!"</div>
+                <div className="text-slate-700 font-medium text-sm">"Copy or run the query to learn!"</div>
               </div>
             </div>
-           )}
         </div>
       </div>
     </div>

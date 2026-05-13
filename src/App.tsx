@@ -5,7 +5,6 @@ import { generateSql } from './lib/sqlGenerator';
 import { SchemaManager } from './components/SchemaManager';
 import { QueryBuilder } from './components/QueryBuilder';
 import { LivePreview } from './components/LivePreview';
-import { AiBuilder } from './components/AiBuilder';
 import { Templates } from './components/Templates';
 import { SavedQueries } from './components/SavedQueries';
 import { CourseModule } from './components/CourseModule';
@@ -116,9 +115,6 @@ export default function App() {
       <main className="flex-1 flex overflow-hidden p-6 gap-6 max-w-[1400px] mx-auto w-full">
         {/* Left Sidebar: Query Builder */}
         <div className="w-full lg:w-[450px] flex flex-col gap-4 overflow-y-auto pr-2 pb-10">
-          <AiBuilder 
-            schema={state.schema} 
-          />
           <SavedQueries queries={savedQueries} onLoad={handleLoadQuery} onDelete={handleDeleteQuery} />
           <Templates onSelectTemplate={handleTemplateSelect} />
           <SchemaManager schema={state.schema} onSchemaChange={handleSchemaChange} />
